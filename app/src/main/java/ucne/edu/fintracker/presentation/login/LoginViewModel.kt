@@ -10,8 +10,8 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.flow.StateFlow
-import ucne.edu.fintracker.data.local.repository.LoginRepository
-import ucne.edu.fintracker.presentation.remote.dto.UsuarioDto
+import ucne.edu.fintracker.repository.LoginRepository
+import ucne.edu.fintracker.remote.dto.UsuarioDto
 import javax.inject.Inject
 
 @HiltViewModel
@@ -64,6 +64,7 @@ class LoginViewModel @Inject constructor(
                     apellido = state.registerApellido,
                     email = state.registerEmail,
                     contraseña = state.registerPassword,
+                    fotoPerfil = null,
                     divisa = "DOP"
                 )
                 loginRepository.register(newUser)
@@ -76,16 +77,6 @@ class LoginViewModel @Inject constructor(
 
     fun resetPassword() {
         viewModelScope.launch {
-//            try {
-//                val success = loginRepository.enviarResetPassword(uiState.value.resetEmail)
-//                if (success) {
-//                    println("Enlace enviado")
-//                } else {
-//                    println("Error al enviar enlace")
-//                }
-//            } catch (e: Exception) {
-//                println("Excepción: ${e.message}")
-//            }
         }
     }
 
@@ -101,11 +92,9 @@ class LoginViewModel @Inject constructor(
         _uiState.update { it.copy(registerNombre = value) }
     }
 
-
     fun onRegisterApellidoChange(value: String) {
         _uiState.update { it.copy(registerApellido = value) }
     }
-
 
     fun onRegisterEmailChange(value: String) {
         _uiState.update { it.copy(registerEmail = value) }
@@ -115,14 +104,11 @@ class LoginViewModel @Inject constructor(
         _uiState.update { it.copy(registerPassword = value) }
     }
 
-
     fun onResetEmailChange(value: String) {
         _uiState.update { it.copy(resetEmail = value, resetError = null, resetSuccess = null) }
     }
-
 
     fun changeTab(index: Int) {
         _uiState.update { it.copy(tabIndex = index) }
     }
 }
-

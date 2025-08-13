@@ -8,11 +8,11 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import ucne.edu.fintracker.data.local.repository.LimiteRepository
-import ucne.edu.fintracker.data.local.repository.CategoriaRepository
-import ucne.edu.fintracker.presentation.remote.Resource
-import ucne.edu.fintracker.presentation.remote.dto.CategoriaDto
-import ucne.edu.fintracker.presentation.remote.dto.LimiteGastoDto
+import ucne.edu.fintracker.repository.LimiteRepository
+import ucne.edu.fintracker.repository.CategoriaRepository
+import ucne.edu.fintracker.remote.Resource
+import ucne.edu.fintracker.remote.dto.CategoriaDto
+import ucne.edu.fintracker.remote.dto.LimiteGastoDto
 
 import javax.inject.Inject
 
@@ -20,8 +20,11 @@ import javax.inject.Inject
 class LimiteViewModel @Inject constructor(
     private val limiteRepository: LimiteRepository,
     private val categoriaRepository: CategoriaRepository,
-
     ) : ViewModel() {
+
+    companion object {
+        private const val ERROR_DESCONOCIDO = "Error desconocido"
+    }
 
     private var usuarioIdActual: Int? = null
     private val _uiState = MutableStateFlow(
@@ -86,7 +89,7 @@ class LimiteViewModel @Inject constructor(
                         _uiState.update {
                             it.copy(
                                 isLoading = false,
-                                error = result.message ?: "Error desconocido"
+                                error = result.message ?: ERROR_DESCONOCIDO
                             )
                         }
                     }
@@ -119,7 +122,7 @@ class LimiteViewModel @Inject constructor(
                         _uiState.update {
                             it.copy(
                                 isLoading = false,
-                                error = result.message ?: "Error desconocido"
+                                error = result.message ?: ERROR_DESCONOCIDO
                             )
                         }
                     }
@@ -151,7 +154,7 @@ class LimiteViewModel @Inject constructor(
                         _uiState.update {
                             it.copy(
                                 isLoading = false,
-                                error = result.message ?: "Error desconocido"
+                                error = result.message ?: ERROR_DESCONOCIDO
                             )
                         }
                     }
@@ -181,7 +184,7 @@ class LimiteViewModel @Inject constructor(
                         _uiState.update {
                             it.copy(
                                 isLoading = false,
-                                error = result.message ?: "Error desconocido"
+                                error = result.message ?: ERROR_DESCONOCIDO
                             )
                         }
                     }
