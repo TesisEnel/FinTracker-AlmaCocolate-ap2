@@ -10,11 +10,11 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import ucne.edu.fintracker.data.local.repository.CategoriaRepository
-import ucne.edu.fintracker.data.local.repository.PagoRepository
-import ucne.edu.fintracker.presentation.remote.Resource
-import ucne.edu.fintracker.presentation.remote.dto.CategoriaDto
-import ucne.edu.fintracker.presentation.remote.dto.PagoRecurrenteDto
+import ucne.edu.fintracker.repository.CategoriaRepository
+import ucne.edu.fintracker.repository.PagoRepository
+import ucne.edu.fintracker.remote.Resource
+import ucne.edu.fintracker.remote.dto.CategoriaDto
+import ucne.edu.fintracker.remote.dto.PagoRecurrenteDto
 import javax.inject.Inject
 
 @HiltViewModel
@@ -22,6 +22,10 @@ class PagoViewModel @Inject constructor(
     private val pagoRecurrenteRepository: PagoRepository,
     private val categoriaRepository: CategoriaRepository
 ) : ViewModel() {
+
+    companion object {
+        private const val ERROR_DESCONOCIDO = "Error desconocido"
+    }
 
     private val _uiState = MutableStateFlow(
         PagoUiState(
@@ -40,9 +44,19 @@ class PagoViewModel @Inject constructor(
     val categorias: StateFlow<List<CategoriaDto>> = _categorias
 
     fun inicializar(usuarioId: Int) {
-        Log.d("LimiteViewModel", "Inicializando datos para usuario $usuarioId")
-        usuarioIdActual = usuarioId
-        fetchCategorias(usuarioId)
+        if (usuarioId <= 0) return
+        if (usuarioIdActual != usuarioId) {
+            usuarioIdActual = usuarioId
+
+            fetchCategorias(usuarioId)
+
+            cargarPagosRecurrentes(usuarioId)
+
+            viewModelScope.launch {
+                pagoRecurrenteRepository.syncPagosRecurrentes(usuarioId)
+                cargarPagosRecurrentes(usuarioId)
+            }
+        }
     }
 
 
@@ -67,8 +81,6 @@ class PagoViewModel @Inject constructor(
         }
     }
 
-
-    /** 🔹 Cargar pagos recurrentes de un usuario */
     fun cargarPagosRecurrentes(usuarioId: Int) {
         viewModelScope.launch {
             pagoRecurrenteRepository.getPagosRecurrentes(usuarioId).collect { result ->
@@ -89,7 +101,7 @@ class PagoViewModel @Inject constructor(
                         _uiState.update {
                             it.copy(
                                 isLoading = false,
-                                error = result.message ?: "Error desconocido"
+                                error = result.message ?: ERROR_DESCONOCIDO
                             )
                         }
                     }
@@ -98,7 +110,6 @@ class PagoViewModel @Inject constructor(
         }
     }
 
-    // Crear pago recurrente
     fun crearPagoRecurrente(pagoRecurrenteDto: PagoRecurrenteDto) {
         Log.d("PagoRecurrenteVM", "Creando pago recurrente: $pagoRecurrenteDto")
         viewModelScope.launch {
@@ -125,7 +136,7 @@ class PagoViewModel @Inject constructor(
                         _uiState.update {
                             it.copy(
                                 isLoading = false,
-                                error = result.message ?: "Error desconocido"
+                                error = result.message ?: ERROR_DESCONOCIDO
                             )
                         }
                     }
@@ -134,7 +145,6 @@ class PagoViewModel @Inject constructor(
         }
     }
 
-    // 🔹 Actualizar pago recurrente
     fun actualizarPagoRecurrente(id: Int, pagoRecurrenteDto: PagoRecurrenteDto) {
         viewModelScope.launch {
             pagoRecurrenteRepository.updatePagoRecurrente(id, pagoRecurrenteDto).collect { result ->
@@ -158,7 +168,7 @@ class PagoViewModel @Inject constructor(
                         _uiState.update {
                             it.copy(
                                 isLoading = false,
-                                error = result.message ?: "Error desconocido"
+                                error = result.message ?: ERROR_DESCONOCIDO
                             )
                         }
                     }
@@ -189,7 +199,7 @@ class PagoViewModel @Inject constructor(
                         _uiState.update {
                             it.copy(
                                 isLoading = false,
-                                error = result.message ?: "Error desconocido"
+                                error = result.message ?: ERROR_DESCONOCIDO
                             )
                         }
                     }

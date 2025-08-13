@@ -12,7 +12,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.rememberNavController
 import dagger.hilt.android.AndroidEntryPoint
 import ucne.edu.fintracker.presentation.navegation.FinTrackerNavHost
-import ucne.edu.fintracker.presentation.remote.FinTrackerApi
+import ucne.edu.fintracker.remote.FinTrackerApi
 import ucne.edu.fintracker.presentation.theme.ThemeViewModel
 import ucne.edu.fintracker.ui.theme.FinTrackerTheme
 import javax.inject.Inject
@@ -25,17 +25,15 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            // Obtener el ViewModel del tema
             val themeViewModel: ThemeViewModel = hiltViewModel()
             val isDarkTheme by themeViewModel.isDarkTheme.collectAsState()
 
-            // Aplicar el tema basado en la preferencia del usuario
             FinTrackerTheme(darkTheme = isDarkTheme) {
                 val navController = rememberNavController()
 
                 Scaffold { innerPadding ->
                     FinTrackerNavHost(
-                        navHostController = navController, // Usa la misma instancia de navController
+                        navHostController = navController,
                         finTrackerApi = finTrackerApi,
                         modifier = Modifier.padding(innerPadding)
                     )

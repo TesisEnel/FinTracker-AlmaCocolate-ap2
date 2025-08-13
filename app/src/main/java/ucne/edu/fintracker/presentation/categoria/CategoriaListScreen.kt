@@ -33,7 +33,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.ui.unit.sp
-import ucne.edu.fintracker.presentation.remote.dto.CategoriaDto
+import ucne.edu.fintracker.remote.dto.CategoriaDto
 import androidx.compose.material3.TextButton
 
 @Composable
@@ -223,7 +223,7 @@ fun CategoriaBody(
     categoria: CategoriaDto
 ) {
     val colorFondo = try {
-        Color(android.graphics.Color.parseColor("#${categoria?.colorFondo?.removePrefix("#") ?: "CCCCCC"}"))
+        Color(android.graphics.Color.parseColor("#" + categoria.colorFondo.removePrefix("#")))
     } catch (e: Exception) {
         Color.Gray
     }
@@ -259,4 +259,3 @@ fun CategoriaBody(
         )
     }
 }
-

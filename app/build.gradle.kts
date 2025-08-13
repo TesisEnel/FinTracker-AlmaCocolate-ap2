@@ -1,3 +1,10 @@
+import java.util.Properties
+import java.io.FileInputStream
+
+val localProperties = Properties().apply {
+    load(FileInputStream(rootProject.file("local.properties")))
+}
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -18,6 +25,12 @@ android {
         targetSdk = 35
         versionCode = 1
         versionName = "1.0"
+
+        buildConfigField(
+            "String",
+            "apiKey",
+            localProperties.getProperty("apiKey")
+        )
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -40,6 +53,7 @@ android {
     }
     buildFeatures {
         compose = true
+        buildConfig = true
     }
     packagingOptions {
         resources {
@@ -79,16 +93,18 @@ dependencies {
 
     implementation(libs.androidx.datastore.preferences)
 
-    implementation("com.google.code.gson:gson:2.10.1")
-    implementation("androidx.datastore:datastore-preferences:1.0.0")
-    implementation ("androidx.compose.foundation:foundation:1.6.8")
+    implementation(libs.gson)
+    implementation(libs.androidx.datastore.preferences)
+    implementation (libs.androidx.foundation)
 
     implementation("com.google.cloud:google-cloud-aiplatform:3.69.0") {
         exclude(group = "org.threeten", module = "threetenbp")
     }
-//    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.8.0")
-
-
+    // Notificaciones
+    implementation("androidx.work:work-runtime-ktx:2.9.0")
+    implementation("androidx.datastore:datastore-preferences:1.0.0")
+    // Para manejo de permisos
+    implementation("com.google.accompanist:accompanist-permissions:0.32.0")
 
     //Navegacion
     implementation(libs.androidx.navigation.compose)

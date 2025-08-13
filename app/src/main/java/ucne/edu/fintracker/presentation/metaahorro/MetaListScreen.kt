@@ -20,10 +20,10 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
-import androidx.navigation.compose.currentBackStackEntryAsState
 import coil.compose.AsyncImage
 
 @Composable
@@ -37,8 +37,6 @@ fun MetaListScreen(
     onAgregarMontoClick: (Int) -> Unit
 ) {
     val uiState by viewModel.uiState.collectAsState()
-    val navBackStackEntry by navController.currentBackStackEntryAsState()
-    val currentRoute = navBackStackEntry?.destination?.route
 
     Scaffold(
         containerColor = MaterialTheme.colorScheme.surface,
@@ -109,8 +107,6 @@ fun MetaListScreen(
                             color = MaterialTheme.colorScheme.onSurface
                         ) }
                     )
-                    val navBackStackEntry by navController.currentBackStackEntryAsState()
-                    val currentRoute = navBackStackEntry?.destination?.route
 
                     NavigationBarItem(
                         selected = true,
@@ -199,11 +195,16 @@ fun MetaListScreen(
                                                 color = MaterialTheme.colorScheme.onSurface
                                             )
                                             Spacer(Modifier.height(4.dp))
+
                                             Text(
-                                                text = "RD$ ${meta.montoObjetivo}",
+                                                text = "RD$ ${String.format("%,.2f", meta.montoObjetivo)}",
                                                 fontSize = 14.sp,
-                                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                                maxLines = 1,
+                                                overflow = TextOverflow.Ellipsis,
+                                                modifier = Modifier.fillMaxWidth()
                                             )
+
 
                                             Spacer(Modifier.height(8.dp))
                                             Row(

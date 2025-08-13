@@ -5,15 +5,12 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import ucne.edu.fintracker.data.local.repository.CategoriaRepository
-import ucne.edu.fintracker.presentation.remote.dto.CategoriaDto
-import ucne.edu.fintracker.presentation.remote.Resource
+import ucne.edu.fintracker.repository.CategoriaRepository
+import ucne.edu.fintracker.remote.dto.CategoriaDto
+import ucne.edu.fintracker.remote.Resource
 import javax.inject.Inject
 
 @HiltViewModel
@@ -25,18 +22,6 @@ class CategoriaViewModel @Inject constructor(
 
     private val _uiState = MutableStateFlow(CategoriaUiState())
     val uiState = _uiState.asStateFlow()
-
-    init {
-        viewModelScope.launch {
-            _usuarioId
-                .filter { it != null && it != 0 }
-                .collectLatest { id ->
-                    fetchCategorias(id!!)
-                }
-        }
-    }
-
-    val usuarioId: StateFlow<Int?> = _usuarioId
 
     fun setUsuarioId(id: Int) {
         Log.d("CategoriaViewModel", "setUsuarioId: $id")
